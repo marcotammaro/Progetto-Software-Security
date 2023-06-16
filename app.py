@@ -54,7 +54,14 @@ def resetpassword():
     message = None
 
     domain = request.host
-    allowedDomains = ["webserver:8080", "localhost:8080", "remoteurl:8080"]
+    allowedDomains = [
+        "webserver:80",
+        "localhost:80",
+        "remoteurl:80",
+        "webserver:8085",
+        "localhost:8085",
+        "remoteurl:8085",
+    ]
     if domain not in allowedDomains:
         randomIndex = random.randint(0, len(allowedDomains))
         domain = allowedDomains[randomIndex]
@@ -63,7 +70,7 @@ def resetpassword():
         recipient = request.form["email"]
 
         if recipient in users:
-            token = secrets.token_hex(20)
+            token = secrets.token_hex(20)  # SHA1(recipient)
             users[recipient]["token"] = token
             msg = Message("Reset your password", recipients=[recipient])
             msg.html = render_template(
